@@ -13,16 +13,19 @@ export default class ConstructionProgress extends WorldstateObject {
   /**
    * @param data The construction data
    */
-  constructor(data: number[]) {
+  constructor(data: number[] = [0, 0, 0]) {
+    // Patch: always ensure data is a 3-element array of numbers, fallback to [0,0,0]
+    const safeData = Array.isArray(data) && data.length >= 3
+      ? data
+      : [0, 0, 0];
     super({
       _id: {
-        $oid: createHash('md5').update(JSON.stringify(data), 'utf8').digest('hex'),
+        $oid: createHash('md5').update(JSON.stringify(safeData), 'utf8').digest('hex'),
       },
     });
-    
 
-    this.fomorianProgress = (data[0] ?? 0.0).toFixed(2);
-    this.razorbackProgress = (data[1] ?? 0.0).toFixed(2);
-    this.unknownProgress = (data[2] ?? 0.0).toFixed(2);
+    this.fomorianProgress = (safeData[0] ?? 0.0).toFixed(2);
+    this.razorbackProgress = (safeData[1] ?? 0.0).toFixed(2);
+    this.unknownProgress = (safeData[2] ?? 0.0).toFixed(2);
   }
 }
